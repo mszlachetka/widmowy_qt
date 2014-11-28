@@ -22,16 +22,19 @@ public:
     bool isClickedLeft=0;
     bool isClickedRight=0;
     bool isPosChanged=0;
+    bool isPaintChanged=0;
+
 
      int currentX=0;
      int currentY=0;
 
- int LED_SIZE= 6; //6
- int INNER_RING= 3;//podane w ilosci ledow
- int LED_AMMOUNT =16; // 16
+ int LED_SIZE= 7; //6
+ int INNER_RING= 5;//podane w ilosci ledow
+ int LED_AMOUNT =16; // 16
  int CHECK_RECT_SIZE= 6;//6
 
      bool **tLed;
+
 
 
 

@@ -13,18 +13,19 @@ Ekran::Ekran(QWidget *parent) :
     this->setMaximumWidth(600);
     this->setMouseTracking(true);
 
-    this->tLed=new bool *[LED_AMMOUNT];
-    for(int i=0;i<LED_AMMOUNT;i++)
-    {
-        this->tLed[i]=new bool [360];
+    this->tLed=new bool *[LED_AMOUNT];
 
+    for(int i=0;i<LED_AMOUNT;i++)
+    {
+        this->tLed[i]=new bool [300];
     }
 
-   for(int i=0;i<LED_AMMOUNT;i++)
+   for(int i=0;i<LED_AMOUNT;i++)
    {
-    for(int j=0;j<360;j++)
+    for(int j=0;j<300;j++)
     {
         this->tLed[i][j]=false;
+
     }
    }
 
@@ -84,33 +85,35 @@ void Ekran::paintEvent(QPaintEvent *event)
 
 
            this->update();
-        //this->update(this->currentX,this->currentY,16,16);
 
 
-       // d.end();
-        //const QRect mRect(this->currentX-LED_SIZE,this->currentY-LED_SIZE,LED_SIZE,LED_SIZE);
-        //this->update(mRect);
-  //  QImage image(this->maximumHeight(),this->maximumWidth(),QImage::Format_ARGB32_Premultiplied);
-   // QPainter d(&image);
-   // rysuj_Tlo(&d);
-   // QPainter widgetPainter(this);
-    //widgetPainter.drawImage(0, 0, image);
+
+
 }
 
 void Ekran::rysuj_Pedzel(QPainter *d)
 {
     d->setBrush(Qt::blue);
     d->setPen(Qt::blue);
-    for(int i=0;i<LED_AMMOUNT;i++)
+    for(int i=0;i<LED_AMOUNT;i++)
     {
-     for(int j=0;j<360;j++)
+     for(int j=0;j<300;j++)
      {
     if(this->tLed[i][j]==true)
     {
-        const QPoint next_point(this->maximumHeight()/2+2*(LED_SIZE*(i+INNER_RING-1)*qCos(j*PI/180)),this->maximumHeight()/2+2*(LED_SIZE*(i-1+INNER_RING)*qSin(j*PI/180)));
-
+        const QPoint next_point(this->maximumHeight()/2+2*(LED_SIZE*(i+INNER_RING-1)*qCos(6*j*PI/180/5)),this->maximumHeight()/2+2*(LED_SIZE*(i-1+INNER_RING)*qSin(6*j*PI/180/5)));
+        d->setBrush(Qt::blue);
+        d->setPen(Qt::blue);
          d->drawEllipse(next_point,LED_SIZE,LED_SIZE);
     }
+  /*  if(this->tSended[i][j]==true)
+    {
+        const QPoint next_point(this->maximumHeight()/2+2*(LED_SIZE*(i+INNER_RING-1)*qCos(j*PI/180)),this->maximumHeight()/2+2*(LED_SIZE*(i-1+INNER_RING)*qSin(j*PI/180)));
+        d->setBrush(Qt::green);
+        d->setPen(Qt::green);
+
+         d->drawEllipse(next_point,LED_SIZE,LED_SIZE);
+    }*/// do sprawdzania
      }
     }
 }
@@ -120,16 +123,16 @@ void Ekran::rysuj_Tlo(QPainter *d)
     d->setPen(Qt::darkMagenta);
     d->drawRect(0,0,this->maximumWidth()-1,this->maximumHeight()-1);
    const QPoint center(this->maximumWidth()/2,this->maximumHeight()/2);//srodek
-  //d->drawEllipse(center,LED_SIZE*(2*LED_AMMOUNT+INNER_RING),LED_SIZE*(2*LED_AMMOUNT+INNER_RING));//obwod
+  //d->drawEllipse(center,LED_SIZE*(2*LED_AMOUNT+INNER_RING),LED_SIZE*(2*LED_AMOUNT+INNER_RING));//obwod
   //d->drawEllipse(center,LED_SIZE*INNER_RING,LED_SIZE*INNER_RING);//wewnetrzny
 
 
     d->setPen(Qt::red);
- for(int j=0;j<360;j++)
+ for(int j=0;j<300;j++)
  {
-  for(int i=INNER_RING;i<LED_AMMOUNT+INNER_RING;i++)//ledy
+  for(int i=INNER_RING;i<LED_AMOUNT+INNER_RING;i++)//ledy
   {
-      const QPoint next_point(this->maximumHeight()/2+2*(LED_SIZE*(i-1)*qCos(j*PI/180)),this->maximumHeight()/2+2*(LED_SIZE*(i-1)*qSin(j*PI/180)));
+      const QPoint next_point(this->maximumHeight()/2+2*(LED_SIZE*(i-1)*qCos(6*j*PI/180/5)),this->maximumHeight()/2+2*(LED_SIZE*(i-1)*qSin(6*j*PI/180/5)));
     //if(j%1==0)
        d->drawEllipse(next_point,LED_SIZE,LED_SIZE);
   }
@@ -149,12 +152,12 @@ void Ekran::generuj_Pedzel(QPainter *d)
             QRect checkRect(this->currentX-CHECK_RECT_SIZE,this->currentY-CHECK_RECT_SIZE,2*CHECK_RECT_SIZE,2*CHECK_RECT_SIZE);
 
 
-            for(int i=0;i<LED_AMMOUNT;i++)
+            for(int i=0;i<LED_AMOUNT;i++)
             {
-             for(int j=0;j<360;j++)
+             for(int j=0;j<300;j++)
              {
-        if(checkRect.contains(this->maximumHeight()/2+2*(LED_SIZE*(i+INNER_RING-1)*qCos(j*PI/180))
-                ,this->maximumHeight()/2+2*(LED_SIZE*(i-1+INNER_RING)*qSin(j*PI/180))))
+        if(checkRect.contains(this->maximumHeight()/2+2*(LED_SIZE*(i+INNER_RING-1)*qCos(6*j*PI/180/5))
+                ,this->maximumHeight()/2+2*(LED_SIZE*(i-1+INNER_RING)*qSin(6*j*PI/180/5))))
 
             if(this->isClickedLeft) this->tLed[i][j]=true;
              else if(this->isClickedRight) this->tLed[i][j]=false;
