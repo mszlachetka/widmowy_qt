@@ -17,11 +17,9 @@ TEMPLATE = app
 
 SOURCES += main.cpp\
         mainwindow.cpp \
-    ekran.cpp \
-    sleeperthread.cpp
+    ekran.cpp
 
 HEADERS  += mainwindow.h \
-    ekran.h \
-    sleeperthread.h
+    ekran.h
 
 FORMS    += mainwindow.ui

@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>989</width>
-    <height>683</height>
+    <width>979</width>
+    <height>699</height>
    </rect>
   </property>
   <property name="cursor">
@@ -19,65 +19,68 @@
   <property name="windowTitle">
    <string>MainWindow</string>
   </property>
+  <property name="windowIcon">
+   <iconset>
+    <normaloff>../../../../INNE/Różne/L.jpg</normaloff>../../../../INNE/Różne/L.jpg</iconset>
+  </property>
   <widget class="QWidget" name="centralWidget">
    <widget class="QWidget" name="gridLayoutWidget">
     <property name="geometry">
      <rect>
-      <x>250</x>
-      <y>10</y>
-      <width>721</width>
+      <x>280</x>
+      <y>20</y>
+      <width>691</width>
       <height>631</height>
      </rect>
     </property>
     <layout class="QGridLayout" name="gridLayout_2"/>
    </widget>
-   <widget class="QWidget" name="layoutWidget">
+   <widget class="QWidget" name="">
     <property name="geometry">
      <rect>
-      <x>10</x>
-      <y>11</y>
-      <width>222</width>
-      <height>230</height>
+      <x>32</x>
+      <y>32</y>
+      <width>251</width>
+      <height>261</height>
      </rect>
     </property>
     <layout class="QVBoxLayout" name="verticalLayout_4">
      <item>
-      <layout class="QGridLayout" name="gridLayout">
-       <item row="0" column="0">
-        <layout class="QVBoxLayout" name="verticalLayout">
-         <item>
-          <widget class="QPushButton" name="pushButton_2">
-           <property name="text">
-            <string>connect</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pushButton">
-           <property name="text">
-            <string>write</string>
-           </property>
-          </widget>
-         </item>
-         <item>
-          <widget class="QPushButton" name="pushButton_3">
-           <property name="text">
-            <string>clear</string>
-           </property>
-          </widget>
-         </item>
-        </layout>
+      <layout class="QVBoxLayout" name="verticalLayout">
+       <item>
+        <widget class="QPushButton" name="pushButton_2">
+         <property name="text">
+          <string>connect</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton">
+         <property name="text">
+          <string>write</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <widget class="QPushButton" name="pushButton_3">
+         <property name="text">
+          <string>clear</string>
+         </property>
+        </widget>
        </item>
       </layout>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_3">
+      <layout class="QVBoxLayout" name="verticalLayout_2">
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_6">
+        <layout class="QHBoxLayout" name="horizontalLayout">
          <item>
           <widget class="QLabel" name="label_5">
            <property name="text">
             <string>Led amount</string>
+           </property>
+           <property name="buddy">
+            <cstring>edit_led_amount</cstring>
            </property>
           </widget>
          </item>
@@ -91,11 +94,14 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_5">
+        <layout class="QHBoxLayout" name="horizontalLayout_2">
          <item>
           <widget class="QLabel" name="label_6">
            <property name="text">
             <string>Led size</string>
+           </property>
+           <property name="buddy">
+            <cstring>edit_led_size</cstring>
            </property>
           </widget>
          </item>
@@ -105,11 +111,14 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_4">
+        <layout class="QHBoxLayout" name="horizontalLayout_3">
          <item>
           <widget class="QLabel" name="label_7">
            <property name="text">
             <string>Brush size</string>
+           </property>
+           <property name="buddy">
+            <cstring>edit_brush_size</cstring>
            </property>
           </widget>
          </item>
@@ -119,11 +128,14 @@
         </layout>
        </item>
        <item>
-        <layout class="QHBoxLayout" name="horizontalLayout_3">
+        <layout class="QHBoxLayout" name="horizontalLayout_4">
          <item>
           <widget class="QLabel" name="label_8">
            <property name="text">
             <string>Gap size</string>
+           </property>
+           <property name="buddy">
+            <cstring>edit_gap_size</cstring>
            </property>
           </widget>
          </item>
@@ -135,11 +147,33 @@
       </layout>
      </item>
      <item>
-      <widget class="QPushButton" name="pushButton_7">
-       <property name="text">
-        <string>change</string>
-       </property>
-      </widget>
+      <layout class="QVBoxLayout" name="verticalLayout_3">
+       <item>
+        <widget class="QPushButton" name="pushButton_7">
+         <property name="text">
+          <string>change</string>
+         </property>
+        </widget>
+       </item>
+       <item>
+        <layout class="QHBoxLayout" name="horizontalLayout_5">
+         <item>
+          <widget class="QPushButton" name="save_Button">
+           <property name="text">
+            <string>save</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QPushButton" name="load_Button">
+           <property name="text">
+            <string>load</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </item>
+      </layout>
      </item>
     </layout>
    </widget>
@@ -150,7 +184,7 @@
     <rect>
      <x>0</x>
      <y>0</y>
-     <width>989</width>
+     <width>979</width>
      <height>21</height>
     </rect>
    </property>
