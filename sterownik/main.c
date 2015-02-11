@@ -11,6 +11,7 @@
 #include "led_driver.h"
 
 
+
 char dane[2][360];
 volatile int usart_flag=0;
 char usart_bufor=0;
