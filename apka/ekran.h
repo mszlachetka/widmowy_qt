@@ -6,9 +6,11 @@
 #include <QKeyEvent>
 #include <QTime>
 #include <QImage>
+#include <QRadioButton>
 
 
 #define PI 3.14159265359
+#define LED_ROWS 120
 
 
 
@@ -28,14 +30,20 @@ public:
      int currentX=0;
      int currentY=0;
 
- int LED_SIZE= 7; //6
- int INNER_RING= 5;//podane w ilosci ledow
- int LED_AMOUNT =16; // 16
+ int LED_SIZE= 4; //6
+ int INNER_RING= 6;//podane w ilosci ledow
+ int LED_AMOUNT =30; // 15
  int CHECK_RECT_SIZE= 6;//6
 
+
      bool **tLed;
+     unsigned char **tLed_Green;
+     unsigned char **tLed_Red;
+     unsigned char **tLed_Blue;
 
-
+     unsigned char Red=0;
+     unsigned char Green=0;
+     unsigned char Blue=0;
 
 
 signals:
@@ -45,6 +53,8 @@ public slots:
 void generuj_Pedzel(QPainter *d);
 void rysuj_Pedzel(QPainter *d);
  void rysuj_Tlo(QPainter *d);
+
+ void get_button(const int G, const int R, const int B);
 
 
  void mousePressEvent(QMouseEvent *event);

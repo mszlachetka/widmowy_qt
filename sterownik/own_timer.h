@@ -8,7 +8,6 @@
 #ifndef OWN_TIMER_H_
 #define OWN_TIMER_H_
 
-
 volatile int pomiarczasu=0;
 
 void czas_ms(int czas)

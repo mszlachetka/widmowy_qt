@@ -17,18 +17,23 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-     QSerialPort *serial = new QSerialPort(this);
+     QSerialPort *MasterSerialPort = new QSerialPort(this);
      int BytesRead=0;
 
 
 private:
     Ui::MainWindow *ui;
     Ekran *p;
+
 public slots:
 
     void on_pushButton_clicked();
     void on_pushButton_2_clicked();
     void serial_receive();
+    void serial_dc();
+    void receive_data();
+
+    void delay(int ms);
 
 private slots:
 
@@ -37,6 +42,16 @@ private slots:
     void on_save_Button_clicked();
     void on_load_Button_clicked();
 
+
+
+    void on_GreenSlider_valueChanged(int value);
+
+    void on_RedSlider_valueChanged(int value);
+
+    void on_BlueSlider_valueChanged(int value);
+
+signals:
+  void  send_button(const int Green, const int Red, const int Blue);
 };
 
 #endif // MAINWINDOW_H

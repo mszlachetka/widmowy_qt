@@ -1,6 +1,6 @@
 #include "ekran.h"
 #include <qmath.h>
-
+#include <QRadioButton>
 
 
 
@@ -14,21 +14,29 @@ Ekran::Ekran(QWidget *parent) :
     this->setMouseTracking(true);
 
     this->tLed=new bool *[LED_AMOUNT];
+     this->tLed_Green=new unsigned char *[LED_AMOUNT];
+     this->tLed_Red=new unsigned char *[LED_AMOUNT];
+     this->tLed_Blue=new unsigned char *[LED_AMOUNT];
 
     for(int i=0;i<LED_AMOUNT;i++)
     {
-        this->tLed[i]=new bool [300];
+        this->tLed[i]=new bool [LED_ROWS];
+        this->tLed_Green[i]=new unsigned char [LED_ROWS];
+        this->tLed_Red[i]=new unsigned char [LED_ROWS];
+        this->tLed_Blue[i]=new unsigned char [LED_ROWS];
     }
 
    for(int i=0;i<LED_AMOUNT;i++)
    {
-    for(int j=0;j<300;j++)
+    for(int j=0;j<LED_ROWS;j++)
     {
         this->tLed[i][j]=false;
+        this->tLed_Green[i][j]=0;
+         this->tLed_Red[i][j]=0;
+         this->tLed_Blue[i][j]=0;
 
     }
    }
-
 
 
 }
@@ -52,8 +60,8 @@ void Ekran::mouseMoveEvent(QMouseEvent *event)
     this->isPosChanged=1;
         this->currentX=event->pos().x();
                 this->currentY=event->pos().y();
-
     }
+
 
 
 }
@@ -71,49 +79,40 @@ void Ekran::mouseReleaseEvent(QMouseEvent *event)
 
 }
 
-
+void Ekran::get_button(const int G, const int R, const int B)
+{
+  this->Red=R;
+  this->Green=G;
+  this->Blue=B;
+}
 
 void Ekran::paintEvent(QPaintEvent *event)
 {
 
-
     QPainter d(this);
-
         rysuj_Tlo(&d);
         generuj_Pedzel(&d);
         rysuj_Pedzel(&d);
-
-
            this->update();
-
-
-
-
 }
 
 void Ekran::rysuj_Pedzel(QPainter *d)
 {
-    d->setBrush(Qt::blue);
-    d->setPen(Qt::blue);
+    d->setBrush(QColor(this->Red,this->Green,this->Blue));
+    d->setPen(QColor(this->Red,this->Green,this->Blue));
     for(int i=0;i<LED_AMOUNT;i++)
     {
-     for(int j=0;j<300;j++)
+     for(int j=0;j<LED_ROWS;j++)
      {
     if(this->tLed[i][j]==true)
     {
-        const QPoint next_point(this->maximumHeight()/2+2*(LED_SIZE*(i+INNER_RING-1)*qCos(6*j*PI/180/5)),this->maximumHeight()/2+2*(LED_SIZE*(i-1+INNER_RING)*qSin(6*j*PI/180/5)));
-        d->setBrush(Qt::blue);
-        d->setPen(Qt::blue);
+        const QPoint next_point(this->maximumHeight()/2+2*(LED_SIZE*(i+INNER_RING-1)*qCos(360*(j+LED_ROWS/360*90)*PI/180/LED_ROWS))
+                                ,this->maximumHeight()/2+2*(LED_SIZE*(i-1+INNER_RING)*qSin(360*(j+LED_ROWS/360*90)*PI/180/LED_ROWS)));
+        d->setBrush(QColor(this->tLed_Red[i][j],this->tLed_Green[i][j],this->tLed_Blue[i][j]));
+        d->setPen(QColor(this->tLed_Red[i][j],this->tLed_Green[i][j],this->tLed_Blue[i][j]));
          d->drawEllipse(next_point,LED_SIZE,LED_SIZE);
     }
-  /*  if(this->tSended[i][j]==true)
-    {
-        const QPoint next_point(this->maximumHeight()/2+2*(LED_SIZE*(i+INNER_RING-1)*qCos(j*PI/180)),this->maximumHeight()/2+2*(LED_SIZE*(i-1+INNER_RING)*qSin(j*PI/180)));
-        d->setBrush(Qt::green);
-        d->setPen(Qt::green);
 
-         d->drawEllipse(next_point,LED_SIZE,LED_SIZE);
-    }*/// do sprawdzania
      }
     }
 }
@@ -127,12 +126,13 @@ void Ekran::rysuj_Tlo(QPainter *d)
   //d->drawEllipse(center,LED_SIZE*INNER_RING,LED_SIZE*INNER_RING);//wewnetrzny
 
 
-    d->setPen(Qt::red);
- for(int j=0;j<300;j++)
+    d->setPen(Qt::black);
+    d->setBrush(Qt::black);
+ for(int j=0;j<LED_ROWS;j++)
  {
   for(int i=INNER_RING;i<LED_AMOUNT+INNER_RING;i++)//ledy
   {
-      const QPoint next_point(this->maximumHeight()/2+2*(LED_SIZE*(i-1)*qCos(6*j*PI/180/5)),this->maximumHeight()/2+2*(LED_SIZE*(i-1)*qSin(6*j*PI/180/5)));
+      const QPoint next_point(this->maximumHeight()/2+2*(LED_SIZE*(i-1)*qCos(360*(j+LED_ROWS/360*90)*PI/180/LED_ROWS)),this->maximumHeight()/2+2*(LED_SIZE*(i-1)*qSin(360*(j+LED_ROWS/360*90)*PI/180/LED_ROWS)));
     //if(j%1==0)
        d->drawEllipse(next_point,LED_SIZE,LED_SIZE);
   }
@@ -140,9 +140,8 @@ void Ekran::rysuj_Tlo(QPainter *d)
 }
 
 
-void Ekran::generuj_Pedzel(QPainter *d)
+void Ekran::generuj_Pedzel(QPainter *d) //kat 6*(i+(5/6 zadanego kata))/5 -> dobre przyblizenie
 {
-
 
     if(this->isPosChanged)
     {
@@ -154,18 +153,29 @@ void Ekran::generuj_Pedzel(QPainter *d)
 
             for(int i=0;i<LED_AMOUNT;i++)
             {
-             for(int j=0;j<300;j++)
+             for(int j=0;j<LED_ROWS;j++)
              {
-        if(checkRect.contains(this->maximumHeight()/2+2*(LED_SIZE*(i+INNER_RING-1)*qCos(6*j*PI/180/5))
-                ,this->maximumHeight()/2+2*(LED_SIZE*(i-1+INNER_RING)*qSin(6*j*PI/180/5))))
+        if(checkRect.contains(this->maximumHeight()/2+2*(LED_SIZE*(i+INNER_RING-1)*qCos(360*(j+LED_ROWS/360*90)*PI/180/LED_ROWS))
+                ,this->maximumHeight()/2+2*(LED_SIZE*(i-1+INNER_RING)*qSin(360*(j+LED_ROWS/360*90)*PI/180/LED_ROWS))))
 
-            if(this->isClickedLeft) this->tLed[i][j]=true;
-             else if(this->isClickedRight) this->tLed[i][j]=false;
-
+            if(this->isClickedLeft)
+            {
+                this->tLed[i][j]=true;
+                this->tLed_Green[i][j]=this->Green;
+                 this->tLed_Red[i][j]=this->Red;
+                 this->tLed_Blue[i][j]=this->Blue;
+            }
+             else if(this->isClickedRight)
+            {
+                this->tLed[i][j]=false;
+                this->tLed_Green[i][j]=0;
+                 this->tLed_Red[i][j]=0;
+                 this->tLed_Blue[i][j]=0;
              }
             }
 
 
+}
 }
 }
 
