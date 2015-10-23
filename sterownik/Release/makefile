@@ -30,56 +30,56 @@ endif
 
 # Add inputs and outputs from these tool invocations to the build variables 
 LSS += \
-wyswietlacz_widmowy.lss \
+magic_led.lss \
 
 FLASH_IMAGE += \
-wyswietlacz_widmowy.hex \
+magic_led.hex \
 
 EEPROM_IMAGE += \
-wyswietlacz_widmowy.eep \
+magic_led.eep \
 
 SIZEDUMMY += \
 sizedummy \
 
 
 # All Target
-all: wyswietlacz_widmowy.elf secondary-outputs
+all: magic_led.elf secondary-outputs
 
 # Tool invocations
-wyswietlacz_widmowy.elf: $(OBJS) $(USER_OBJS)
+magic_led.elf: $(OBJS) $(USER_OBJS)
 	@echo 'Building target: $@'
 	@echo 'Invoking: AVR C Linker'
-	avr-gcc -Wl,-Map,wyswietlacz_widmowy.map -mmcu=atmega8 -o "wyswietlacz_widmowy.elf" $(OBJS) $(USER_OBJS) $(LIBS)
+	avr-gcc -Wl,-Map,magic_led.map -mmcu=atmega8 -o "magic_led.elf" $(OBJS) $(USER_OBJS) $(LIBS)
 	@echo 'Finished building target: $@'
 	@echo ' '
 
-wyswietlacz_widmowy.lss: wyswietlacz_widmowy.elf
+magic_led.lss: magic_led.elf
 	@echo 'Invoking: AVR Create Extended Listing'
-	-avr-objdump -h -S wyswietlacz_widmowy.elf  >"wyswietlacz_widmowy.lss"
+	-avr-objdump -h -S magic_led.elf  >"magic_led.lss"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-wyswietlacz_widmowy.hex: wyswietlacz_widmowy.elf
+magic_led.hex: magic_led.elf
 	@echo 'Create Flash image (ihex format)'
-	-avr-objcopy -R .eeprom -O ihex wyswietlacz_widmowy.elf  "wyswietlacz_widmowy.hex"
+	-avr-objcopy -R .eeprom -R .fuse -R .lock -R .signature -O ihex magic_led.elf  "magic_led.hex"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-wyswietlacz_widmowy.eep: wyswietlacz_widmowy.elf
+magic_led.eep: magic_led.elf
 	@echo 'Create eeprom image (ihex format)'
-	-avr-objcopy -j .eeprom --no-change-warnings --change-section-lma .eeprom=0 -O ihex wyswietlacz_widmowy.elf  "wyswietlacz_widmowy.eep"
+	-avr-objcopy -j .eeprom --no-change-warnings --change-section-lma .eeprom=0 -O ihex magic_led.elf  "magic_led.eep"
 	@echo 'Finished building: $@'
 	@echo ' '
 
-sizedummy: wyswietlacz_widmowy.elf
+sizedummy: magic_led.elf
 	@echo 'Invoking: Print Size'
-	-avr-size --format=avr --mcu=atmega8 wyswietlacz_widmowy.elf
+	-avr-size --format=avr --mcu=atmega8 magic_led.elf
 	@echo 'Finished building: $@'
 	@echo ' '
 
 # Other Targets
 clean:
-	-$(RM) $(FLASH_IMAGE)$(ELFS)$(OBJS)$(ASM_DEPS)$(EEPROM_IMAGE)$(S_DEPS)$(SIZEDUMMY)$(S_UPPER_DEPS)$(LSS)$(C_DEPS) wyswietlacz_widmowy.elf
+	-$(RM) $(FLASH_IMAGE)$(ELFS)$(OBJS)$(ASM_DEPS)$(EEPROM_IMAGE)$(S_DEPS)$(SIZEDUMMY)$(S_UPPER_DEPS)$(LSS)$(C_DEPS) magic_led.elf
 	-@echo ' '
 
 secondary-outputs: $(LSS) $(FLASH_IMAGE) $(EEPROM_IMAGE) $(SIZEDUMMY)

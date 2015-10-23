@@ -1,5 +1,5 @@
-main.d: ../main.c ../own_timer.h ../led_driver.h
+main.d: ../main.c ../ws281x.h ../eeprom_spi.h
 
-../own_timer.h:
+../ws281x.h:
 
-../led_driver.h:
+../eeprom_spi.h:
