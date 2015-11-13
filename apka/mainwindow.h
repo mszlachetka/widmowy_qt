@@ -6,6 +6,7 @@
 #include <QByteArray>
 #include "ekran.h"
 
+
 namespace Ui {
 class MainWindow;
 }
@@ -25,6 +26,7 @@ private:
     Ui::MainWindow *ui;
     Ekran *p;
 
+
 public slots:
 
     void on_pushButton_clicked();
@@ -33,12 +35,13 @@ public slots:
     void serial_dc();
     void receive_data();
 
+
     void delay(int ms);
 
 private slots:
 
     void on_pushButton_3_clicked();
-    void on_pushButton_7_clicked();
+
     void on_save_Button_clicked();
     void on_load_Button_clicked();
 
@@ -49,6 +52,20 @@ private slots:
     void on_RedSlider_valueChanged(int value);
 
     void on_BlueSlider_valueChanged(int value);
+
+    void on_lowerButton_clicked();
+
+    void on_upperButton_clicked();
+
+    void on_edit_led_size_editingFinished();
+
+    void on_edit_brush_size_cursorPositionChanged(int arg1, int arg2);
+
+
+
+
+    void on_lineEdit_returnPressed();
+
 
 signals:
   void  send_button(const int Green, const int Red, const int Blue);

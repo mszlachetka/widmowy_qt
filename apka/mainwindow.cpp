@@ -10,6 +10,9 @@
 #include <QFileDialog>
 #include <QFile>
 #include <QTime>
+#include <QImage>
+#include <QPixmap>
+#include <qmath.h>
 
 
 
@@ -22,10 +25,11 @@ MainWindow::MainWindow(QWidget *parent) :
     p = new Ekran;
     ui->gridLayout_2->addWidget(p,0,0,0,0);
 
-    setWindowTitle("WYSWIETLACZ WIDMOWY");
+    setWindowTitle("BIKE LED DISPLAY");
 
-    MasterSerialPort->setPortName("com3");
-    MasterSerialPort->setBaudRate(QSerialPort::Baud2400);
+    MasterSerialPort->setPortName("com40");
+    ui->lineEdit->setText("com40");
+    MasterSerialPort->setBaudRate(QSerialPort::Baud38400);
     MasterSerialPort->setDataBits(QSerialPort::Data8);
     MasterSerialPort->setParity(QSerialPort::NoParity);
     MasterSerialPort->setStopBits(QSerialPort::OneStop);
@@ -33,12 +37,12 @@ MainWindow::MainWindow(QWidget *parent) :
     connect(MasterSerialPort,SIGNAL(readyRead()),this,SLOT(receive_data()));
     connect(MasterSerialPort,SIGNAL(error(QSerialPort::SerialPortError)),this,SLOT(serial_dc()));
 
+
     ui->pushButton_2->setStyleSheet("* { background-color: rgb(255,100,100) }");
 
      ui->color_label->setStyleSheet("* { background-color: rgb(0,0,0) }");
-  ui->edit_led_amount->setText(QString::number(p->LED_AMOUNT));
+
  ui->edit_led_size->setText(QString::number(p->LED_SIZE));
- ui->edit_gap_size->setText(QString::number(p->INNER_RING));
   ui->edit_brush_size->setText(QString::number(p->CHECK_RECT_SIZE));
 
      if(ui->edit_brush_size->text().toInt()!=p->CHECK_RECT_SIZE) {p->CHECK_RECT_SIZE=ui->edit_brush_size->text().toInt();}
@@ -47,6 +51,8 @@ MainWindow::MainWindow(QWidget *parent) :
 
     QObject::connect(this, SIGNAL(send_button(const int &,const int &,const int &)),
                     p, SLOT(get_button(const int &,const int &,const int &)));
+
+
 
 }
 
@@ -65,7 +71,7 @@ void MainWindow::serial_dc()
    ui->pushButton_2->setStyleSheet("* { background-color: rgb(255,100,100) }");
 }
 
-
+#include <QDebug>
 void MainWindow::on_pushButton_clicked()
 {
     if(!MasterSerialPort->isOpen())
@@ -80,38 +86,32 @@ void MainWindow::on_pushButton_clicked()
          this->MasterSerialPort->write(&send,1);
            this->MasterSerialPort->flush();
 
-        delay(200);
-
         int i=0;
         int j=0;
         while(i!=LED_ROWS)
         {
+            int i_rotated=(i+(p->ROTATION_ANGLE/3))%120;
+
            for(j=0;j<p->LED_AMOUNT;j++)
            {
-               send=p->tLed_Green[j][i];//green
+               send=p->tLed_Green[j][i_rotated]>>1;//green
                this->MasterSerialPort->flush();
                 this->MasterSerialPort->write(&send,1);
                   this->MasterSerialPort->flush();
 
-
-
-               send=p->tLed_Red[j][i];//red
+               send=p->tLed_Red[j][i_rotated]>>1;//red
                this->MasterSerialPort->flush();
                 this->MasterSerialPort->write(&send,1);
                   this->MasterSerialPort->flush();
 
-
-
-               send=p->tLed_Blue[j][i];//blue
+               send=p->tLed_Blue[j][i_rotated]>>1;//blue
                this->MasterSerialPort->flush();
                 this->MasterSerialPort->write(&send,1);
                   this->MasterSerialPort->flush();
-
-
-
            }
-           delay(200);
-            i++;
+           delay(15);
+           i++;
+           ui->progressBar->setValue(i);
         }
 
     }
@@ -218,55 +218,11 @@ void MainWindow::on_pushButton_3_clicked()
 
 }
 
-void MainWindow::on_pushButton_7_clicked()
-{
-    bool isResized=false;
-   if(ui->edit_led_amount->text().toInt()!=p->LED_AMOUNT &&  ui->edit_led_amount->text().toInt()>0 && ui->edit_led_amount->text().toInt()<=30){p->LED_AMOUNT=ui->edit_led_amount->text().toInt();isResized=true;}
-   else if (ui->edit_led_amount->text().toInt()<=0) QMessageBox::warning(this , "WRONG VALUE ", "LED AMOUNT should be greater than 0");
-   else if (ui->edit_led_amount->text().toInt()>30) QMessageBox::warning(this , "WRONG VALUE ", "Maximal LED AMOUNT is 30 ");
-    if(ui->edit_led_size->text().toInt()!=p->LED_SIZE && ui->edit_led_size->text().toInt()>0)  {p->LED_SIZE=ui->edit_led_size->text().toInt();}
-     else if (ui->edit_led_size->text().toInt()<=0) QMessageBox::warning(this , "WRONG VALUE ", "LED SIZE should be greater than 0");
-    if(ui->edit_brush_size->text().toInt()!=p->CHECK_RECT_SIZE && ui->edit_brush_size->text().toInt()>0) {p->CHECK_RECT_SIZE=ui->edit_brush_size->text().toInt();}
-    else if (ui->edit_brush_size->text().toInt()<=0) QMessageBox::warning(this , "WRONG VALUE ", "BRUSH SIZE should be greater than 0");
-    if(ui->edit_gap_size->text().toInt()!=p->INNER_RING && ui->edit_gap_size->text().toInt()>0) {p->INNER_RING=ui->edit_gap_size->text().toInt();}
-     else if (ui->edit_gap_size->text().toInt()<=0) QMessageBox::warning(this , "WRONG VALUE ", "GAP SIZE should be greater than 0");
-
-
-    if(isResized==true)
-    {
-         setWindowTitle("WYSWIETLACZ WIDMOWY");
-        p->tLed=new bool *[p->LED_AMOUNT];
-        p->tLed_Green=new unsigned char *[p->LED_AMOUNT];
-        p->tLed_Blue=new unsigned char *[p->LED_AMOUNT];
-        p->tLed_Red=new unsigned char *[p->LED_AMOUNT];
-        for(int i=0;i<p->LED_AMOUNT;i++)
-        {
-            p->tLed[i]=new bool [LED_ROWS];
-             p->tLed_Green[i]=new unsigned char [LED_ROWS];
-              p->tLed_Red[i]=new unsigned char [LED_ROWS];
-               p->tLed_Blue[i]=new unsigned char[LED_ROWS];
-        }
-
-    for(int i=0;i<p->LED_AMOUNT;i++)
-    {
-     for(int j=0;j<LED_ROWS;j++)
-     {
-        p->tLed[i][j]=false;
-        p->tLed_Green[i][j]=0;
-        p->tLed_Blue[i][j]=0;
-        p->tLed_Red[i][j]=0;
-
-
-
-     }
-    }
-    }
-}
 
 void MainWindow::on_save_Button_clicked()
 {
     QString fileName = QFileDialog::getSaveFileName(this,
-        tr("SAVE IMAGE"), "/home/", tr("Images (*.wid)"));
+        tr("SAVE IMAGE"), "/home/" ,tr("Images (*.wid)"));
 
     if(fileName.contains(".wid"))
     {
@@ -278,7 +234,6 @@ void MainWindow::on_save_Button_clicked()
     mFileData<<"LS"<<"\n"<<p->LED_SIZE<<"\n";
     mFileData<<"BS"<<"\n"<<p->CHECK_RECT_SIZE<<"\n";
     mFileData<<"GS"<<"\n"<<p->INNER_RING<<"\n";
-
     for(int j=0;j<LED_ROWS;j++)
         for(int i=0;i<p->LED_AMOUNT;i++)
         {
@@ -302,12 +257,15 @@ void MainWindow::on_save_Button_clicked()
         }
      mFile.close();
     }
+
+
 }
 
+#include <QDebug>
 void MainWindow::on_load_Button_clicked()
 {
     QString fileName = QFileDialog::getOpenFileName(this,
-        tr("OPEN IMAGE"), "/home/", tr("Images (*.wid);;Images (*.jpg)"));
+        tr("OPEN IMAGE"), "/home/", tr("Images (*.wid);;Images (*.jpg);;Images (*.btm);;Images (*.png)"));
 
 
     bool tflag=true;
@@ -321,7 +279,7 @@ void MainWindow::on_load_Button_clicked()
 
     mFile.open(QIODevice::ReadOnly );
 
-    setWindowTitle("WYSWIETLACZ WIDMOWY ("+fileName+")");
+    setWindowTitle("BIKE LED DISPLAY ("+fileName+")");
     QTextStream mFileData(&mFile);
   QString line;
 
@@ -422,13 +380,39 @@ void MainWindow::on_load_Button_clicked()
 
     mFile.close();
 
-ui->edit_led_amount->setText(QString::number(p->LED_AMOUNT));
+
 ui->edit_led_size->setText(QString::number(p->LED_SIZE));
-ui->edit_gap_size->setText(QString::number(p->INNER_RING));
 ui->edit_brush_size->setText(QString::number(p->CHECK_RECT_SIZE));
 
     }
+    else if(fileName.contains(".jpg") || fileName.contains(".bmp") || fileName.contains(".png")  )
+    {
 
+        QImage mImage;
+        mImage.load(fileName);
+        mImage=mImage.scaled(p->size(),Qt::IgnoreAspectRatio,Qt::FastTransformation);
+
+        setWindowTitle("BIKE LED DISPLAY ("+fileName+")");
+
+        for(int i=0;i<p->LED_AMOUNT;i++)
+        {
+         for(int j=0;j<LED_ROWS;j++)
+         {
+            const QPoint next_point(p->maximumHeight()/2+
+                                    2*(p->LED_SIZE*(i+p->INNER_RING-1)
+                                    *qCos(360*(j+LED_ROWS/360*90)*PI/180/LED_ROWS))
+                                    ,p->maximumHeight()/2+2*(p->LED_SIZE
+                                    *(i-1+p->INNER_RING)*qSin(360*(j+LED_ROWS/360*90)
+                                     *PI/180/LED_ROWS)));
+            QColor c;
+            QColor pxl(mImage.pixel(next_point.x(),next_point.y()));
+                   p->tLed_Red[i][j]= pxl.red();
+                   p->tLed_Green[i][j]= pxl.green();
+                   p->tLed_Blue[i][j]= pxl.blue();
+                  if(p->tLed_Blue!=0 || p->tLed_Green!=0 ||p->tLed_Red!=0) p->tLed[i][j]=true;
+         }
+        }
+    }
 
 }
 
@@ -466,3 +450,47 @@ void MainWindow::on_BlueSlider_valueChanged(int value)
                                             +QString::number(ui->BlueSlider->value())+") }";
             ui->color_label->setStyleSheet(mText);
 }
+
+void MainWindow::on_lowerButton_clicked()
+{
+    p->ROTATION_ANGLE-=3;
+    if(p->ROTATION_ANGLE==-3) p->ROTATION_ANGLE=357;
+}
+
+void MainWindow::on_upperButton_clicked()
+{
+    p->ROTATION_ANGLE+=3;
+    if(p->ROTATION_ANGLE==360) p->ROTATION_ANGLE=0;
+}
+
+void MainWindow::on_edit_led_size_editingFinished()
+{
+    if(ui->edit_led_size->text().toInt()!=p->LED_SIZE && ui->edit_led_size->text().toInt()>0)  {p->LED_SIZE=ui->edit_led_size->text().toInt();}
+     else if (ui->edit_led_size->text().toInt()<=0) QMessageBox::warning(this , "WRONG VALUE ", "LED SIZE should be greater than 0");
+}
+
+void MainWindow::on_edit_brush_size_cursorPositionChanged(int arg1, int arg2)
+{
+    if(ui->edit_brush_size->text().toInt()!=p->CHECK_RECT_SIZE && ui->edit_brush_size->text().toInt()>0) {p->CHECK_RECT_SIZE=ui->edit_brush_size->text().toInt();}
+    else if (ui->edit_brush_size->text().toInt()<0) QMessageBox::warning(this , "WRONG VALUE ", "BRUSH SIZE should be greater than 0");
+}
+
+
+
+void MainWindow::on_lineEdit_returnPressed()
+{
+    if(MasterSerialPort->isOpen())
+    {
+        MasterSerialPort->close();
+        ui->pushButton_2->setStyleSheet("* { background-color: rgb(255,100,100) }");
+    }
+    if(!ui->lineEdit->text().contains("com") && ui->lineEdit->text().toDouble()!=0)
+    {
+        MasterSerialPort->setPortName("com"+ui->lineEdit->text());
+        ui->lineEdit->setText("com"+ui->lineEdit->text());
+    }
+    else if(ui->lineEdit->text().contains("com")) MasterSerialPort->setPortName(ui->lineEdit->text());
+    else QMessageBox::warning(this , "WRONG VALUE ", "Please enter [number] or [com+number]");
+}
+
+

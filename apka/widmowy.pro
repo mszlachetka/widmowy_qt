@@ -6,6 +6,7 @@
 
 QT       += core gui
 QT       += serialport
+QTPLUGIN   += qjpeg
 
 greaterThan(QT_MAJOR_VERSION, 4): QT += widgets
 
@@ -23,3 +24,6 @@ HEADERS  += mainwindow.h \
     ekran.h
 
 FORMS    += mainwindow.ui
+
+RESOURCES += \
+    icon.qrc

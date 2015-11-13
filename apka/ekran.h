@@ -33,7 +33,8 @@ public:
  int LED_SIZE= 4; //6
  int INNER_RING= 6;//podane w ilosci ledow
  int LED_AMOUNT =30; // 15
- int CHECK_RECT_SIZE= 6;//6
+ int CHECK_RECT_SIZE= 50;//6
+ int ROTATION_ANGLE=0;
 
 
      bool **tLed;
@@ -46,13 +47,14 @@ public:
      unsigned char Blue=0;
 
 
+
 signals:
 
 public slots:
- void paintEvent(QPaintEvent *event);
+void paintEvent(QPaintEvent *event);
 void generuj_Pedzel(QPainter *d);
 void rysuj_Pedzel(QPainter *d);
- void rysuj_Tlo(QPainter *d);
+void rysuj_Tlo(QPainter *d);
 
  void get_button(const int G, const int R, const int B);
 
@@ -60,6 +62,8 @@ void rysuj_Pedzel(QPainter *d);
  void mousePressEvent(QMouseEvent *event);
  void mouseReleaseEvent(QMouseEvent *event);
  void mouseMoveEvent(QMouseEvent *event);
+
+
 };
 
 #endif // EKRAN_H
